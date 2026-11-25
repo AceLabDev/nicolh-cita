@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nicolh, ¿una cita?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #ffd9e4;
+  --bg-deep: #ffc2d4;
+  --ink: #2a0716;
+  --ink-soft: #6b2a45;
+  --cherry: #d80f5a;
+  --cherry-dark: #a30a43;
+  --paper: #fff6f9;
+  --mint: #12a073;
+  --line: #f3a3bd;
+  --display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, "Cascadia Mono", monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 10%, #ffeef3 0 18%, transparent 40%),
+    radial-gradient(circle at 90% 85%, var(--bg-deep) 0 20%, transparent 45%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  overflow-x: hidden;
+}
+main {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding-block: 32px;
+}
+.scene {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--cherry-dark);
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+h1, h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.02;
+  text-wrap: balance;
+  letter-spacing: -.01em;
+}
+h1 { font-size: clamp(2.6rem, 10vw, 4.4rem); }
+h1 .name { color: var(--cherry); display: block; }
+h2 { font-size: clamp(2rem, 7.5vw, 3.2rem); }
+.drama {
+  min-height: 3em;
+  max-width: 42ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 1.05rem;
+}
+.heart {
+  width: 96px; height: 96px;
+  transition: transform .3s ease;
+}
+.heart.cracked path.crack { opacity: 1; }
+.heart path.crack { opacity: 0; transition: opacity .3s; }
+
+.choices {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 120px;
+}
+button { font: inherit; cursor: pointer; }
+.btn {
+  font-family: var(--display);
+  font-weight: 400;
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  padding: .55em 1.3em;
+  font-size: 1.5rem;
+  box-shadow: 0 5px 0 var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease, font-size .35s ease, padding .35s ease;
+  touch-action: manipulation;
+}
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.btn:focus-visible { outline: 3px dashed var(--cherry); outline-offset: 4px; }
+.btn-yes { background: var(--cherry); color: var(--paper); }
+.btn-yes:hover { background: var(--cherry-dark); }
+.btn-no {
+  background: var(--paper);
+  color: var(--ink);
+  transition: left .18s ease, top .18s ease, transform .18s ease, font-size .2s ease;
+  white-space: nowrap;
+  z-index: 5;
+}
+.btn-no.loose { position: fixed; }
+.counter {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  width: 100%;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 22px;
+  box-shadow: 0 8px 0 var(--ink);
+  padding: 24px;
+  text-align: left;
+}
+.lead { margin: 0; font-size: 1.1rem; max-width: 46ch; }
+
+form { display: flex; flex-direction: column; gap: 22px; }
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.field > label, .field > .label {
+  font-weight: 700;
+  font-size: .95rem;
+}
+.hint { font-size: .85rem; color: var(--ink-soft); margin-top: -4px; }
+input[type="date"], input[type="text"], select, textarea {
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  padding: 10px 12px;
+  width: 100%;
+  min-width: 0;
+}
+textarea { resize: vertical; min-height: 80px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--cherry);
+  outline-offset: 2px;
+}
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 460px) { .row { grid-template-columns: 1fr; } }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s, color .15s;
+}
+.chip input:checked + span { background: var(--ink); color: var(--paper); }
+.chip input:focus-visible + span { outline: 3px solid var(--cherry); outline-offset: 2px; }
+
+input[type="range"] { width: 100%; accent-color: var(--cherry); }
+.meter-read {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  font-size: .9rem; color: var(--ink-soft);
+}
+.meter-read b { font-family: var(--mono); color: var(--cherry); font-size: 1rem; font-variant-numeric: tabular-nums; }
+
+.error { color: var(--cherry-dark); font-weight: 600; font-size: .9rem; min-height: 1.2em; margin: 0; }
+
+.ticket {
+  width: 100%;
+  background: var(--paper);
+  border: 3px dashed var(--ink);
+  border-radius: 18px;
+  padding: 20px 22px;
+  text-align: left;
+  font-size: 1rem;
+}
+.ticket dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
+.ticket dt {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-soft); padding-top: 3px;
+}
+.ticket dd { margin: 0; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.btn-small { font-size: 1.1rem; padding: .5em 1.1em; border-radius: 14px; text-decoration: none; display: inline-block; }
+.btn-wa { background: var(--mint); color: #fff; }
+.btn-ghost { background: var(--paper); color: var(--ink); }
+.toast { font-size: .9rem; color: var(--ink-soft); min-height: 1.3em; margin: 0; }
+
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 20; width: 100%; height: 100%; }
+
+.pop { animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes pop { from { transform: scale(.85); opacity: .4; } to { transform: scale(1); opacity: 1; } }
+.shake { animation: shake .4s ease; }
+@keyframes shake {
+  20% { transform: translateX(-8px) rotate(-2deg); }
+  40% { transform: translateX(8px) rotate(2deg); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop, .shake { animation: none; }
+  .btn, .btn-no { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<main>
+
+  <!-- Escena 1: la pregunta -->
+  <section class="scene" id="ask">
+    <span class="eyebrow">De Gabo para Nicolh · Capítulo 1</span>
+    <svg class="heart" id="heart" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M50 88 C20 66 6 50 6 32 C6 18 17 8 30 8 C39 8 46 13 50 20 C54 13 61 8 70 8 C83 8 94 18 94 32 C94 50 80 66 50 88Z" fill="#d80f5a" stroke="#2a0716" stroke-width="5" stroke-linejoin="round"/>
+      <path class="crack" d="M50 22 L44 38 L56 48 L46 62 L52 76" fill="none" stroke="#2a0716" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h1>¿Quieres salir <span class="name">conmigo?</span></h1>
+    <p class="drama" id="drama" aria-live="polite">Tus indirectas fueron tan sutiles como un letrero de neón, pero funcionaron: voy a subir a la Colonia Tovar. Que conste que no es por las fresas.</p>
+    <div class="choices" id="choices">
+      <button class="btn btn-yes" id="yes" type="button">Sí</button>
+      <button class="btn btn-no" id="no" type="button">No</button>
+    </div>
+    <span class="counter" id="counter" hidden></span>
+  </section>
+
+  <!-- Escena 2: dijo que sí -->
+  <section class="scene" id="yay" hidden>
+    <span class="eyebrow">Capítulo 2 · Final feliz</span>
+    <h2 class="pop">¡LO SABÍA!</h2>
+    <p class="lead" id="yayText">Dijiste que sí. Mi corazón, que llevaba tres capítulos sufriendo, acaba de recuperarse milagrosamente. Nos vemos en la Colonia Tovar. — Gabo</p>
+    <button class="btn btn-yes" id="toForm" type="button">Continuar →</button>
+  </section>
+
+  <!-- Escena 3: formulario -->
+  <section class="scene" id="plan" hidden>
+    <span class="eyebrow">Capítulo 3 · Los detalles</span>
+    <h2>Ahora, la logística</h2>
+    <p class="lead">Ya firmaste, no hay vuelta atrás. Tú subes con el tour y yo por mi cuenta, así que hay que cuadrar cuándo te escapas un rato.</p>
+    <div class="card">
+      <form id="dateForm" novalidate>
+        <div class="field">
+          <span class="label" id="dayLabel">¿Qué día nos vemos allá?</span>
+          <div class="chips" role="radiogroup" aria-labelledby="dayLabel">
+            <label class="chip"><input type="radio" id="dSab" name="day" value="El sábado"><span>Sábado</span></label>
+            <label class="chip"><input type="radio" id="dDom" name="day" value="El domingo"><span>Domingo</span></label>
+            <label class="chip"><input type="radio" id="dAmbos" name="day" value="Los dos días"><span>Los dos días</span></label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="fTime">¿Cuándo te suelta el tour?</label>
+            <select id="fTime">
+              <option value="En la mañana">En la mañana</option>
+              <option value="A la hora del almuerzo" selected>A la hora del almuerzo</option>
+              <option value="En la tarde">En la tarde</option>
+              <option value="Cuando el guía se distraiga">Cuando el guía se distraiga</option>
+              <option value="Todavía no sé, te aviso">Todavía no sé, te aviso</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fPlace">¿Dónde te encuentro?</label>
+            <input type="text" id="fPlace" maxlength="80" placeholder="Por la iglesia, donde pare el tour…">
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label" id="planLabel">¿Qué hacemos?</span>
+          <span class="hint">Elige todo lo que te provoque.</span>
+          <div class="chips" role="group" aria-labelledby="planLabel">
+            <label class="chip"><input type="checkbox" id="pFresas" name="plan" value="Fresas con crema"><span>Fresas con crema</span></label>
+            <label class="chip"><input type="checkbox" id="pComida" name="plan" value="Comida alemana"><span>Comida alemana</span></label>
+            <label class="chip"><input type="checkbox" id="pCafe" name="plan" value="Chocolate caliente"><span>Chocolate caliente</span></label>
+            <label class="chip"><input type="checkbox" id="pPaseo" name="plan" value="Pasear por el pueblo"><span>Pasear por el pueblo</span></label>
+            <label class="chip"><input type="checkbox" id="pFotos" name="plan" value="Tomarnos fotos"><span>Tomarnos fotos</span></label>
+            <label class="chip"><input type="checkbox" id="pSorpresa" name="plan" value="Sorpréndeme"><span>Sorpréndeme</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="fFood">¿Qué se te antoja probar?</label>
+          <input type="text" id="fFood" maxlength="80" placeholder="Strudel, salchichas, pan de jamón alemán…">
+        </div>
+
+        <div class="field">
+          <label for="fHype">Nivel de emoción</label>
+          <input type="range" id="fHype" min="1" max="10" value="8">
+          <div class="meter-read"><span id="hypeLabel">Bastante emocionada, la verdad</span><b id="hypeNum">8/10</b></div>
+        </div>
+
+        <div class="field">
+          <label for="fNote">Algo más que deba saber</label>
+          <textarea id="fNote" maxlength="300" placeholder="Opcional. A qué hora sale el tour, si hace frío llevo chaqueta, amenazas…"></textarea>
+        </div>
+
+        <p class="error" id="formError" role="alert"></p>
+        <button class="btn btn-yes" type="submit" id="submitBtn">Confirmar cita</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Escena 4: resumen -->
+  <section class="scene" id="done" hidden>
+    <span class="eyebrow">Capítulo final · Es oficial</span>
+    <h2 class="pop">Cita confirmada</h2>
+    <div class="ticket">
+      <dl id="ticket"></dl>
+    </div>
+    <p class="lead">Último paso: mándale esto a Gabo para que quede por escrito.</p>
+    <div class="actions">
+      <a class="btn btn-small btn-wa" id="waLink" href="https://wa.me/" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+      <button class="btn btn-small btn-ghost" id="copyBtn" type="button">Copiar texto</button>
+    </div>
+    <p class="toast" id="toast" aria-live="polite"></p>
+    <button class="btn btn-small btn-ghost" id="editBtn" type="button">Cambiar algo</button>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var scenes = ["ask", "yay", "plan", "done"];
+  function show(id) {
+    scenes.forEach(function (s) { $(s).hidden = (s !== id); });
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- Escena 1: el botón "No" que se niega a ser presionado ---------- */
+  var noLines = [
+    "No",
+    "¿Segura?",
+    "¿Segura segura?",
+    "Piénsalo bien",
+    "Última oportunidad",
+    "Me vas a romper el corazón",
+    "¿Ni unas fresitas?",
+    "Estás siendo muy cruel",
+    "Voy a llorar",
+    "Ya estoy llorando",
+    "Ok, esto es personal",
+    "No puedes atraparme",
+    "Nein",
+    "Mejor presiona el otro"
+  ];
+  var dramaLines = [
+    "Tus indirectas fueron tan sutiles como un letrero de neón, pero funcionaron: voy a subir a la Colonia Tovar. Que conste que no es por las fresas.",
+    "Hmm. Seguro fue sin querer.",
+    "El público contiene el aliento.",
+    "En algún lugar, un violinista empezó a tocar algo triste.",
+    "Unas fresas con crema en la Colonia Tovar acaban de perder las ganas de vivir.",
+    "Se escucha a lo lejos un trueno. Muy oportuno.",
+    "Bajó la neblina en la montaña. Hasta el clima está triste.",
+    "Esto ya es un capítulo de telenovela. Con cachetada y todo.",
+    "Estoy escribiendo un poema muy triste. Rima con «Nicolh».",
+    "Gabo va a subir solo a la montaña a comerse un strudel en silencio.",
+    "Mi corazón ahora funciona al 12%.",
+    "Ese botón ya no te va a dejar. Es leal a Gabo.",
+    "Hasta el botón aprendió alemán para decirte que no.",
+    "Solo queda un camino, y es bonito."
+  ];
+
+  var tries = 0, lastEvade = 0;
+  var yesBtn = $("yes"), noBtn = $("no");
+  var yesSize = 1.5; // rem
+
+  function evade(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var now = Date.now();
+    if (now - lastEvade < 350) return;
+    lastEvade = now;
+    tries++;
+    var idx = Math.min(tries, noLines.length - 1);
+    noBtn.textContent = noLines[idx];
+    $("drama").textContent = dramaLines[Math.min(tries, dramaLines.length - 1)];
+
+    var counter = $("counter");
+    counter.hidden = false;
+    counter.textContent = "Intentos de rechazo: " + tries + " · Éxito: 0%";
+
+    // el "Sí" crece, el "No" se encoge
+    yesSize = Math.min(1.5 + tries * 0.28, 4.2);
+    yesBtn.style.fontSize = yesSize + "rem";
+    var noScale = Math.max(1 - tries * 0.06, 0.45);
+    noBtn.style.fontSize = (1.5 * noScale) + "rem";
+
+    // el corazón se agrieta
+    var heart = $("heart");
+    if (tries >= 3) heart.classList.add("cracked");
+    heart.style.transform = "scale(" + Math.max(1 - tries * 0.03, 0.7) + ") rotate(" + (tries % 2 ? -6 : 6) + "deg)";
+    if (!reduceMotion) {
+      heart.classList.remove("shake"); void heart.offsetWidth; heart.classList.add("shake");
+    }
+
+    // salta a otro lugar de la pantalla
+    var vw = window.innerWidth, vh = window.innerHeight;
+    if (!noBtn.classList.contains("loose")) {
+      var r = noBtn.getBoundingClientRect();
+      noBtn.style.left = r.left + "px";
+      noBtn.style.top = r.top + "px";
+      noBtn.classList.add("loose");
+      void noBtn.offsetWidth;
+    }
+    var w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+    var pad = 20;
+    var yr = yesBtn.getBoundingClientRect();
+    var x, y, guard = 0;
+    do {
+      x = pad + Math.random() * Math.max(vw - w - pad * 2, 1);
+      y = pad + Math.random() * Math.max(vh - h - pad * 2, 1);
+      guard++;
+    } while (guard < 30 && x < yr.right + 10 && x + w > yr.left - 10 && y < yr.bottom + 10 && y + h > yr.top - 10);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+
+  // En escritorio huye al acercarse; en celular huye al tocarlo.
+  noBtn.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") evade(e); });
+  noBtn.addEventListener("pointerdown", evade);
+  noBtn.addEventListener("click", function (e) { e.preventDefault(); evade(); });
+  noBtn.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { evade(e); yesBtn.focus(); }
+  });
+
+  yesBtn.addEventListener("click", function () {
+    noBtn.classList.remove("loose");
+    noBtn.style.left = noBtn.style.top = "";
+    if (tries >= 5) {
+      $("yayText").textContent = "Dijiste que sí. Después de " + tries + " intentos de rechazarme, pero eso ya no importa: el pasado se queda en el pasado. Mi corazón, que estaba al 12%, acaba de recuperarse milagrosamente. Nos vemos en la Colonia Tovar. — Gabo";
+    } else if (tries > 0) {
+      $("yayText").textContent = "Dijiste que sí. Hubo un par de dudas por ahí, pero las voy a ignorar con mucha dignidad. Nos vemos en la Colonia Tovar. — Gabo";
+    }
+    show("yay");
+    confetti();
+  });
+
+  window.addEventListener("resize", function () {
+    if (!noBtn.classList.contains("loose")) return;
+    var w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+    noBtn.style.left = Math.min(parseFloat(noBtn.style.left) || 0, window.innerWidth - w - 16) + "px";
+    noBtn.style.top = Math.min(parseFloat(noBtn.style.top) || 0, window.innerHeight - h - 16) + "px";
+  });
+
+  /* ---------- Confeti ---------- */
+  var canvas = $("confetti"), ctx = canvas.getContext("2d");
+  var pieces = [], rafId = null;
+  var colors = ["#d80f5a", "#ff7aa8", "#2a0716", "#ffd23f", "#12a073", "#ffffff"];
+  function sizeCanvas() {
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function confetti() {
+    sizeCanvas();
+    var n = reduceMotion ? 40 : 220;
+    var W = window.innerWidth, H = window.innerHeight;
+    for (var i = 0; i < n; i++) {
+      var fromLeft = i % 2 === 0;
+      pieces.push({
+        x: fromLeft ? -10 : W + 10,
+        y: H * (0.55 + Math.random() * 0.4),
+        vx: (fromLeft ? 1 : -1) * (4 + Math.random() * 9),
+        vy: -(9 + Math.random() * 12),
+        w: 6 + Math.random() * 7,
+        h: 8 + Math.random() * 10,
+        rot: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.35,
+        c: colors[(Math.random() * colors.length) | 0],
+        heart: Math.random() < 0.18,
+        life: 0
+      });
+    }
+    if (!rafId) rafId = requestAnimationFrame(tick);
+  }
+  function drawHeart(s) {
+    ctx.beginPath();
+    ctx.moveTo(0, s * 0.35);
+    ctx.bezierCurveTo(-s, -s * 0.3, -s * 0.45, -s, 0, -s * 0.45);
+    ctx.bezierCurveTo(s * 0.45, -s, s, -s * 0.3, 0, s * 0.35);
+    ctx.fill();
+  }
+  function tick() {
+    var W = window.innerWidth, H = window.innerHeight;
+    ctx.clearRect(0, 0, W, H);
+    pieces = pieces.filter(function (p) { return p.y < H + 40 && p.life < 600; });
+    pieces.forEach(function (p) {
+      p.life++;
+      p.vy += 0.28;
+      p.vx *= 0.985;
+      p.vy = Math.min(p.vy, 5 + Math.sin(p.life / 10));
+      p.x += p.vx + Math.sin(p.life / 15) * 0.6;
+      p.y += p.vy;
+      p.rot += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      if (p.heart) drawHeart(p.w * 1.1);
+      else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.life / 8)) + 1);
+      ctx.restore();
+    });
+    if (pieces.length) rafId = requestAnimationFrame(tick);
+    else { rafId = null; ctx.clearRect(0, 0, W, H); }
+  }
+
+  $("toForm").addEventListener("click", function () { show("plan"); });
+
+  /* ---------- Formulario ---------- */
+  var hypeLabels = {
+    1: "Vine por la comida gratis",
+    2: "Bueno, ya qué",
+    3: "Tibia",
+    4: "Le doy una oportunidad",
+    5: "Curiosa",
+    6: "Ok, me cae bien la idea",
+    7: "Emocionada, no te creas",
+    8: "Bastante emocionada, la verdad",
+    9: "Ya estoy eligiendo outfit",
+    10: "Cancelé todo lo demás"
+  };
+  function updateHype() {
+    var v = $("fHype").value;
+    $("hypeNum").textContent = v + "/10";
+    $("hypeLabel").textContent = hypeLabels[v];
+  }
+  $("fHype").addEventListener("input", updateHype);
+  updateHype();
+
+  var summaryText = "";
+  $("dateForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = $("formError");
+    var dayInput = document.querySelector('input[name="day"]:checked');
+    if (!dayInput) { err.textContent = "Falta el día. Sábado, domingo o los dos, pero algo."; $("dSab").focus(); return; }
+    var plans = Array.prototype.slice.call(document.querySelectorAll('input[name="plan"]:checked')).map(function (i) { return i.value; });
+    if (!plans.length) { err.textContent = "Elige al menos un plan. Aunque sea «Sorpréndeme»."; $("pFresas").focus(); return; }
+    err.textContent = "";
+
+    var rows = [
+      ["Dónde", "Colonia Tovar · " + ($("fPlace").value.trim() || "Te aviso cuando llegue")],
+      ["Cuándo", dayInput.value + " · " + $("fTime").value],
+      ["Plan", plans.join(", ")],
+      ["Antojo", $("fFood").value.trim() || "Lo que sea, sorpréndeme"],
+      ["Emoción", $("fHype").value + "/10 · " + hypeLabels[$("fHype").value]]
+    ];
+    var note = $("fNote").value.trim();
+    if (note) rows.push(["Nota", note]);
+
+    var dl = $("ticket");
+    dl.textContent = "";
+    rows.forEach(function (r) {
+      var dt = document.createElement("dt"); dt.textContent = r[0];
+      var dd = document.createElement("dd"); dd.textContent = r[1];
+      dl.appendChild(dt); dl.appendChild(dd);
+    });
+
+    summaryText = "Gabo, ¡dije que sí! Nos vemos en la Colonia Tovar:\n\n" +
+      rows.map(function (r) { return r[0] + ": " + r[1]; }).join("\n") +
+      "\n\n— Nicolh";
+    $("waLink").href = "https://wa.me/?text=" + encodeURIComponent(summaryText);
+    $("toast").textContent = "";
+    show("done");
+    confetti();
+  });
+
+  $("copyBtn").addEventListener("click", function () {
+    var toast = $("toast");
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = summaryText;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      toast.textContent = ok ? "Copiado. Ahora pégalo en el chat." : "No pude copiarlo solo. Mándame una captura de pantalla.";
+    }
+    try {
+      navigator.clipboard.writeText(summaryText).then(function () {
+        toast.textContent = "Copiado. Ahora pégalo en el chat.";
+      }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  $("editBtn").addEventListener("click", function () { show("plan"); });
+})();
+</script>
+
+</body>
+</html>
